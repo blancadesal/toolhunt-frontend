@@ -173,13 +173,8 @@ const submitContribution = async () => {
   submittedTasks.value.add(currentTask.value.id)
 
   const submission = {
-    tool: {
-      name: currentTask.value.tool.name,
-      title: currentTask.value.tool.title,
-    },
-    user: {
-      id: authState.value.user.id,
-    },
+    tool_name: currentTask.value.tool.name,
+    tool_title: currentTask.value.tool.title,
     completed_date: new Date().toISOString(),
     value: currentUserInput.value,
     field: currentTask.value.field,

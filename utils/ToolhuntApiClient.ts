@@ -5,25 +5,23 @@ export interface User {
   id: string
   username: string
   email: string
-  // Add any other user properties here
 }
 
 export interface Task {
-  id: string
+  id: number
   field: string
   tool: {
+    name: string
     title: string
     description: string
     url: string
   }
-  // Add other task properties as needed
 }
 
 export interface AnnotationsSchema {
   schemas: Record<string, JSONSchemaType<{
     properties: Record<string, JSONSchemaType<unknown>>
   }>>
-  // Add other schema properties as needed
 }
 
 export interface ContributionData {
@@ -53,21 +51,16 @@ export interface UserContributionsResponse {
 }
 
 export interface TaskSubmission {
-  tool: {
-    name: string
-    title: string
-  }
-  user: {
-    id: string
-  }
+  tool_name: string
+  tool_title: string
   completed_date: string
   value: boolean | string | string[] // Can be boolean for reports, or string/string[] for regular tasks
-  field?: 'deprecated' | 'experimental' // Optional field for report submissions
+  field: string // Optional field for report submissions
 }
 
 export interface ToolNamesResponse {
   all_titles: string[]
-  titles: Record<string, string>
+  titles: Record<string, string[]>
 }
 
 const API_BASE_URL = 'http://localhost:8082/api/v1'
@@ -90,7 +83,6 @@ class ToolhuntApiClient {
     return response
   }
 
-  // Auth-related methods
   async fetchUserData(): Promise<User | null> {
     try {
       const response = await fetch(`${API_BASE_URL}/user`, {
@@ -146,12 +138,11 @@ class ToolhuntApiClient {
     }
   }
 
-  // Task-related methods
-  async fetchTasks(toolNames: string | null = null, fieldNames: string | null = null): Promise<Task[]> {
+  async fetchTasks(toolNames: string | null = null, fieldNames: string | null = null, limit: number = 5): Promise<Task[]> {
     const params = new URLSearchParams()
     if (toolNames) params.append('tool_names', toolNames)
     if (fieldNames) params.append('field_names', fieldNames)
-    params.append('limit', '5')
+    params.append('limit', limit.toString())
 
     const response = await this.fetchWithAuth(`/tasks?${params.toString()}`)
     return response.json()
@@ -168,7 +159,7 @@ class ToolhuntApiClient {
   }
 
   async fetchContributions(params?: ContributionsParams): Promise<ContributionsResponse> {
-    let url = '/metrics/contributions'
+    let url = '/user/contributions'
     if (params) {
       const queryParams = new URLSearchParams()
       if (params.days !== undefined) queryParams.append('days', params.days.toString())
@@ -180,7 +171,7 @@ class ToolhuntApiClient {
   }
 
   async fetchUserContributions(username: string, limit?: number): Promise<UserContributionsResponse> {
-    let url = `/metrics/contributions/${encodeURIComponent(username)}`
+    let url = `/user/contributions/${encodeURIComponent(username)}`
     if (limit !== undefined) {
       url += `?limit=${limit}`
     }
@@ -189,7 +180,7 @@ class ToolhuntApiClient {
   }
 
   async submitTask(taskId: number, submission: TaskSubmission): Promise<void> {
-    const response = await this.fetchWithAuth(`/tasks/${taskId}/submit`, {
+    const response = await this.fetchWithAuth(`/tasks/${taskId}`, {
       method: 'POST',
       body: JSON.stringify(submission),
     })
@@ -201,7 +192,7 @@ class ToolhuntApiClient {
   }
 
   async fetchToolNames(): Promise<ToolNamesResponse> {
-    const response = await this.fetchWithAuth('/tools/names')
+    const response = await this.fetchWithAuth('/tools')
     return response.json()
   }
 }
