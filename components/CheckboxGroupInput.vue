@@ -1,6 +1,4 @@
 <script setup>
-import { ref, watch } from 'vue'
-
 const props = defineProps({
   modelValue: {
     type: Array,
@@ -18,11 +16,8 @@ const props = defineProps({
 
 const emit = defineEmits(['update:modelValue', 'enter'])
 
+const firstCheckboxRef = ref(null)
 const selectedValues = ref(props.modelValue)
-
-watch(() => props.modelValue, (newValue) => {
-  selectedValues.value = newValue
-})
 
 const updateValue = (option) => {
   const index = selectedValues.value.indexOf(option.value)
@@ -42,13 +37,15 @@ const handleKeydown = (event) => {
   }
 }
 
-const firstCheckboxRef = ref(null)
-
 const focus = () => {
   if (firstCheckboxRef.value) {
     firstCheckboxRef.value.focus()
   }
 }
+
+watch(() => props.modelValue, (newValue) => {
+  selectedValues.value = newValue
+})
 
 defineExpose({ focus })
 </script>

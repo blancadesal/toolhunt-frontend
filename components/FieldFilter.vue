@@ -12,14 +12,14 @@ const props = defineProps({
 
 const emit = defineEmits(['updateFilters'])
 
+const isCardOpen = ref(false)
+
 const formattedFieldNames = computed(() => {
   return props.fieldNames.map(field => ({
     value: field,
     label: toHumanReadable(field),
   }))
 })
-
-const isCardOpen = ref(false)
 
 const toggleCard = () => {
   isCardOpen.value = !isCardOpen.value

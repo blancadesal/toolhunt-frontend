@@ -1,5 +1,3 @@
-import type { Task } from '~/utils/ToolhuntApiClient'
-
 export function useTaskNavigation(tasks: Ref<Task[]>) {
   const currentTaskIndex = ref(0)
   const isTaskChanging = ref(false)

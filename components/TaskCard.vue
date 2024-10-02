@@ -1,5 +1,4 @@
 <script setup>
-// Props and emits
 const props = defineProps({
   tasks: {
     type: Array,
@@ -54,6 +53,8 @@ const isReportModalOpen = ref(false)
 const reportedToolAttributes = ref({})
 const reportSuccessTimeout = ref(null)
 
+const TOOLHUB_API_BASE_URL = import.meta.env.VITE_TOOLHUB_API_BASE_URL
+
 // Watchers
 watch(() => currentTaskIndex.value, (newIndex, oldIndex) => {
   if (newIndex !== oldIndex) { // Only run this when actually changing tasks
@@ -63,24 +64,6 @@ watch(() => currentTaskIndex.value, (newIndex, oldIndex) => {
     clearValidationError() // Clear validation error when changing tasks
     focusInput()
   }
-})
-
-// Lifecycle hooks
-onMounted(async () => {
-  if (currentTask.value) {
-    taskInputs.value[currentTask.value.id] = isArrayType.value ? [] : ''
-  }
-  window.addEventListener('keydown', handleKeyNavigation)
-  focusInput()
-
-  // Fetch user data if logged in
-  if (isLoggedIn.value) {
-    await fetchUserData()
-  }
-})
-
-onBeforeUnmount(() => {
-  window.removeEventListener('keydown', handleKeyNavigation)
 })
 
 // Computed properties
@@ -152,17 +135,17 @@ const submitContribution = async () => {
   if (isSubmitting.value) return
 
   isSubmitting.value = true
-  console.log('submitContribution called')
+  // console.log('submitContribution called')
 
   if (!isLoggedIn.value || !currentTask.value || !authState.value.user) {
-    console.log('Returning early: not logged in, no current task, or no user data')
+    // console.log('Returning early: not logged in, no current task, or no user data')
     isSubmitting.value = false
     return
   }
 
   const { isValid, error } = validateInput(currentUserInput.value)
   if (!isValid) {
-    console.log('Input validation failed:', error)
+    // console.log('Input validation failed:', error)
     setValidationError(error || 'Invalid input')
     isSubmitting.value = false
     return
@@ -180,12 +163,11 @@ const submitContribution = async () => {
     field: currentTask.value.field,
   }
 
-  console.log('Submission data:', submission)
+  // console.log('Submission data:', submission)
 
   try {
     await submitTask(currentTask.value.id, submission)
-    console.log('Contribution submitted successfully')
-    // We might want to show a success message to the user here
+    // console.log('Contribution submitted successfully')
   }
   catch (error) {
     console.error('Error submitting contribution:', error)
@@ -243,22 +225,17 @@ const submitReport = async (attributes) => {
     for (const attribute of selectedAttributes) {
       if (!currentReportedAttributes[attribute]) {
         const submission = {
-          tool: {
-            name: currentTask.value.tool.name,
-            title: currentTask.value.tool.title,
-          },
-          user: {
-            id: authState.value.user.id,
-          },
+          tool_name: currentTask.value.tool.name,
+          tool_title: currentTask.value.tool.title,
           completed_date: new Date().toISOString(),
           value: true,
           field: attribute,
         }
 
-        console.log(`Submitting report for ${attribute}:`, submission)
+        // console.log(`Submitting report for ${attribute}:`, submission)
         try {
           await submitTask(currentTask.value.id, submission)
-          console.log(`Report for ${attribute} submitted successfully`)
+          // console.log(`Report for ${attribute} submitted successfully`)
         }
         catch (error) {
           console.error(`Error submitting report for ${attribute}:`, error)
@@ -277,6 +254,22 @@ const handleOverlayClick = (event) => {
     closeReportModal()
   }
 }
+// Lifecycle hooks
+onMounted(async () => {
+  if (currentTask.value) {
+    taskInputs.value[currentTask.value.id] = isArrayType.value ? [] : ''
+  }
+  window.addEventListener('keydown', handleKeyNavigation)
+  focusInput()
+
+  if (isLoggedIn.value) {
+    await fetchUserData()
+  }
+})
+
+onBeforeUnmount(() => {
+  window.removeEventListener('keydown', handleKeyNavigation)
+})
 
 // Expose methods
 defineExpose({ resetSubmittedTasks })
@@ -319,7 +312,7 @@ defineExpose({ resetSubmittedTasks })
           <div class="flex flex-col space-y-2 sm:space-y-0 sm:flex-row sm:justify-between sm:items-center">
             <h2 class="card-title text-primary-content text-2xl break-words pr-4">
               <a
-                :href="`https://toolhub.wikimedia.org/tools/${currentTask.tool.name}`"
+                :href="`${TOOLHUB_API_BASE_URL}/tools/${currentTask.tool.name}`"
                 target="_blank"
                 class="transition-opacity duration-200 hover:opacity-70"
               >

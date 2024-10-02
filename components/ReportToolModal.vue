@@ -13,19 +13,23 @@ const props = defineProps({
 
 const emit = defineEmits(['close', 'submit'])
 
+const showConfirmation = ref(false)
+const showSuccess = ref(false)
 const reportAttributes = ref({
   deprecated: false,
   experimental: false,
 })
-
-const showConfirmation = ref(false)
-const showSuccess = ref(false)
 
 const isSubmitDisabled = computed(() => {
   return (!reportAttributes.value.deprecated && !reportAttributes.value.experimental)
     || (reportAttributes.value.deprecated === props.reportedAttributes.deprecated
       && reportAttributes.value.experimental === props.reportedAttributes.experimental)
 })
+
+const tooltips = {
+  deprecated: 'The tool is no longer maintained or recommended for use.',
+  experimental: 'The tool is in an early stage and may be unstable or change significantly.',
+}
 
 const submitReport = () => {
   showConfirmation.value = true
@@ -59,11 +63,6 @@ watch(() => props.isOpen, (newValue) => {
     showSuccess.value = false
   }
 })
-
-const tooltips = {
-  deprecated: 'The tool is no longer maintained or recommended for use.',
-  experimental: 'The tool is in an early stage and may be unstable or change significantly.',
-}
 </script>
 
 <template>

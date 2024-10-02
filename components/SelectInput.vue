@@ -1,6 +1,4 @@
 <script setup>
-import { ref, watch } from 'vue'
-
 const props = defineProps({
   modelValue: {
     type: [String, Number],
@@ -23,10 +21,7 @@ const props = defineProps({
 const emit = defineEmits(['update:modelValue', 'enter'])
 
 const selectedValue = ref(props.modelValue)
-
-watch(() => props.modelValue, (newValue) => {
-  selectedValue.value = newValue
-})
+const selectRef = ref(null)
 
 const updateValue = (event) => {
   selectedValue.value = event.target.value
@@ -39,13 +34,14 @@ const handleKeydown = (event) => {
   }
 }
 
-const selectRef = ref(null)
-
 const focus = () => {
   if (selectRef.value) {
     selectRef.value.focus()
   }
 }
+watch(() => props.modelValue, (newValue) => {
+  selectedValue.value = newValue
+})
 
 defineExpose({ focus })
 </script>

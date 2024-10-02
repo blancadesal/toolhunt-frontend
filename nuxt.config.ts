@@ -4,7 +4,7 @@ export default defineNuxtConfig({
   devtools: { enabled: true },
   runtimeConfig: {
     public: {
-      apiBase: 'http://localhost:8082',
+      apiBase: process.env.API_BASE_URL || 'http://localhost:8082',
     },
   },
   modules: ['@nuxtjs/tailwindcss', '@nuxt/eslint'],

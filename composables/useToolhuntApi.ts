@@ -1,15 +1,14 @@
-// composables/useToolhuntApi.ts
-import { toolhuntApi } from '~/utils/ToolhuntApiClient'
-import type { Task, AnnotationsSchema, ContributionsResponse, ContributionsParams, UserContributionsResponse, ToolNamesResponse, TaskSubmission } from '~/utils/ToolhuntApiClient'
-
 export function useToolhuntApi() {
-  const tasks: Ref<Task[]> = ref([])
-  const fieldNames: Ref<string[]> = ref([])
-  const annotationsSchema: Ref<AnnotationsSchema | null> = ref(null)
-  const contributions: Ref<ContributionsResponse | null> = ref(null)
-  const userContributions: Ref<UserContributionsResponse> = ref({ contributions: [], total_contributions: 0 })
-  const error: Ref<string | null> = ref(null)
-  const toolNames: Ref<ToolNamesResponse | null> = ref(null)
+  const config = useRuntimeConfig()
+  const toolhuntApi = new ToolhuntApiClient(config.public.apiBase)
+
+  const tasks = ref<Task[]>([])
+  const fieldNames = ref<string[]>([])
+  const annotationsSchema = ref<AnnotationsSchema | null>(null)
+  const contributions = ref<ContributionsResponse | null>(null)
+  const userContributions = ref<UserContributionsResponse>({ contributions: [], total_contributions: 0 })
+  const error = ref<string | null>(null)
+  const toolNames = ref<ToolNamesResponse | null>(null)
 
   const fetchTasks = async (toolNames: string | null = null, fieldNames: string | null = null): Promise<void> => {
     try {
@@ -88,6 +87,16 @@ export function useToolhuntApi() {
     }
   }
 
+  const fetchUserData = async (): Promise<User | null> => {
+    try {
+      return await toolhuntApi.fetchUserData()
+    }
+    catch (error) {
+      console.error('Error fetching user data:', error)
+      return null
+    }
+  }
+
   return {
     tasks,
     fieldNames,
@@ -103,5 +112,9 @@ export function useToolhuntApi() {
     submitTask,
     toolNames,
     fetchToolNames,
+    fetchUserData,
+    login: toolhuntApi.login.bind(toolhuntApi),
+    handleCallback: toolhuntApi.handleCallback.bind(toolhuntApi),
+    logout: toolhuntApi.logout.bind(toolhuntApi),
   }
 }

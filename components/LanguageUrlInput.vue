@@ -1,6 +1,4 @@
 <script setup>
-import { ref, watch, onMounted } from 'vue'
-
 const props = defineProps({
   modelValue: {
     type: Array,
@@ -12,21 +10,6 @@ const props = defineProps({
 const emit = defineEmits(['update:modelValue', 'enter'])
 
 const languageUrlPairs = ref([{ language: '', url: '' }])
-
-onMounted(() => {
-  if (props.modelValue.length) {
-    languageUrlPairs.value = [...props.modelValue]
-  }
-})
-
-watch(() => props.modelValue, (newValue) => {
-  if (newValue.length) {
-    languageUrlPairs.value = [...newValue]
-  }
-  else if (languageUrlPairs.value.length === 0) {
-    languageUrlPairs.value = [{ language: '', url: '' }]
-  }
-}, { deep: true })
 
 const updateModelValue = () => {
   emit('update:modelValue', [...languageUrlPairs.value])
@@ -44,13 +27,6 @@ const removePair = (index) => {
   }
 }
 
-const handleKeydown = (event) => {
-  if (event.key === 'Enter') {
-    event.preventDefault()
-    emit('enter', event)
-  }
-}
-
 const cleanupEmptyPairs = () => {
   languageUrlPairs.value = languageUrlPairs.value.filter(pair => pair.language || pair.url)
   if (languageUrlPairs.value.length === 0) {
@@ -58,6 +34,28 @@ const cleanupEmptyPairs = () => {
   }
   updateModelValue()
 }
+
+const handleKeydown = (event) => {
+  if (event.key === 'Enter') {
+    event.preventDefault()
+    emit('enter', event)
+  }
+}
+
+watch(() => props.modelValue, (newValue) => {
+  if (newValue.length) {
+    languageUrlPairs.value = [...newValue]
+  }
+  else if (languageUrlPairs.value.length === 0) {
+    languageUrlPairs.value = [{ language: '', url: '' }]
+  }
+}, { deep: true })
+
+onMounted(() => {
+  if (props.modelValue.length) {
+    languageUrlPairs.value = [...props.modelValue]
+  }
+})
 </script>
 
 <template>

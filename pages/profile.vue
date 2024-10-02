@@ -41,12 +41,6 @@ const fetchContributions = async () => {
   }
 }
 
-const formatDate = (dateString) => {
-  const options = { year: 'numeric', month: 'short', day: 'numeric', hour: '2-digit', minute: '2-digit' }
-  return new Date(dateString).toLocaleString(undefined, options)
-}
-
-// Add this computed property to get the total contributions
 const totalContributions = computed(() => userContributions.value.total_contributions || 0)
 
 onMounted(async () => {

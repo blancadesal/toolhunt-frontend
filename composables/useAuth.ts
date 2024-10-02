@@ -1,9 +1,3 @@
-// composables/useAuth.ts
-
-import { computed } from 'vue'
-import { useState, useRoute } from '#app'
-import { toolhuntApi, type User } from '~/utils/ToolhuntApiClient'
-
 export interface AuthState {
   user: User | null
   loading: boolean
@@ -17,10 +11,12 @@ export const useAuth = () => {
 
   const isLoggedIn = computed(() => authState.value.user != null)
 
-  const fetchUserData = async () => {
+  const { fetchUserData, login, handleCallback, logout } = useToolhuntApi()
+
+  const fetchUserDataAndUpdateState = async () => {
     authState.value.loading = true
     try {
-      authState.value.user = await toolhuntApi.fetchUserData()
+      authState.value.user = await fetchUserData()
     }
     catch (error) {
       console.error('Error fetching user data:', error)
@@ -31,15 +27,15 @@ export const useAuth = () => {
     }
   }
 
-  const login = () => {
+  const loginAndRedirect = () => {
     const currentRoute = useRoute()
     const currentPath = currentRoute.fullPath
-    toolhuntApi.login(currentPath)
+    login(currentPath)
   }
 
-  const handleCallback = async (code: string, state: string) => {
+  const handleCallbackAndUpdateState = async (code: string, state: string) => {
     try {
-      const { user, redirectTo } = await toolhuntApi.handleCallback(code, state)
+      const { user, redirectTo } = await handleCallback(code, state)
       authState.value.user = user
       return redirectTo
     }
@@ -49,9 +45,9 @@ export const useAuth = () => {
     }
   }
 
-  const logout = async () => {
+  const logoutAndUpdateState = async () => {
     try {
-      await toolhuntApi.logout()
+      await logout()
       authState.value.user = null
     }
     catch (error) {
@@ -62,9 +58,9 @@ export const useAuth = () => {
   return {
     authState,
     isLoggedIn,
-    fetchUserData,
-    logout,
-    login,
-    handleCallback,
+    fetchUserData: fetchUserDataAndUpdateState,
+    logout: logoutAndUpdateState,
+    login: loginAndRedirect,
+    handleCallback: handleCallbackAndUpdateState,
   }
 }

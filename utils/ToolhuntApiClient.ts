@@ -63,11 +63,15 @@ export interface ToolNamesResponse {
   titles: Record<string, string[]>
 }
 
-const API_BASE_URL = 'http://localhost:8082/api/v1'
-
 class ToolhuntApiClient {
+  private apiBaseUrl: string
+
+  constructor(apiBaseUrl: string) {
+    this.apiBaseUrl = apiBaseUrl + '/api/v1'
+  }
+
   private async fetchWithAuth(url: string, options: RequestInit = {}): Promise<Response> {
-    const response = await fetch(`${API_BASE_URL}${url}`, {
+    const response = await fetch(`${this.apiBaseUrl}${url}`, {
       ...options,
       credentials: 'include',
       headers: {
@@ -85,7 +89,7 @@ class ToolhuntApiClient {
 
   async fetchUserData(): Promise<User | null> {
     try {
-      const response = await fetch(`${API_BASE_URL}/user`, {
+      const response = await fetch(`${this.apiBaseUrl}/user`, {
         credentials: 'include',
       })
       if (response.ok) {
@@ -103,12 +107,12 @@ class ToolhuntApiClient {
   }
 
   login(redirectPath: string): void {
-    const loginUrl = `${API_BASE_URL}/auth/login?redirect_after=${encodeURIComponent(redirectPath)}`
+    const loginUrl = `${this.apiBaseUrl}/auth/login?redirect_after=${encodeURIComponent(redirectPath)}`
     window.location.href = loginUrl
   }
 
   async handleCallback(code: string, state: string): Promise<{ user: User, redirectTo: string }> {
-    const response = await fetch(`${API_BASE_URL}/auth/callback`, {
+    const response = await fetch(`${this.apiBaseUrl}/auth/callback`, {
       method: 'POST',
       headers: {
         'Content-Type': 'application/json',
@@ -129,7 +133,7 @@ class ToolhuntApiClient {
   }
 
   async logout(): Promise<void> {
-    const response = await fetch(`${API_BASE_URL}/auth/logout`, {
+    const response = await fetch(`${this.apiBaseUrl}/auth/logout`, {
       method: 'POST',
       credentials: 'include',
     })
@@ -197,4 +201,4 @@ class ToolhuntApiClient {
   }
 }
 
-export const toolhuntApi = new ToolhuntApiClient()
+export default ToolhuntApiClient

@@ -6,7 +6,7 @@ export function useInputValidation(fieldSchema: Ref<JSONSchemaType<unknown>>, is
     allErrors: true,
     strictSchema: false,
     strictTypes: false,
-    // Add this option to ensure full validation of formats
+    // Ensure full validation of formats
     validateFormats: true,
   })
   addFormats(ajv)
