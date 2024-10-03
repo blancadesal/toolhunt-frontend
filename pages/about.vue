@@ -59,7 +59,21 @@
                 rel="noopener noreferrer"
                 class="link"
               >Outreachy</a>
-              internship project. It was inspired by
+              internship project, developed by
+              <a
+                href="https://github.com/HWaruguru"
+                target="_blank"
+                rel="noopener noreferrer"
+                class="link"
+              >Hannah Waruguru</a>
+              and
+              <a
+                href="https://github.com/nbarnabee"
+                target="_blank"
+                rel="noopener noreferrer"
+                class="link"
+              >Nicole Barnabee</a>.
+              It was inspired by
               <a
                 href="https://citationhunt.toolforge.org/"
                 target="_blank"

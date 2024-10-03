@@ -1,75 +1,29 @@
-# Nuxt 3 Minimal Starter
+# Toolhunt Frontend
 
-Look at the [Nuxt 3 documentation](https://nuxt.com/docs/getting-started/introduction) to learn more.
+This is a port of the [Toolhunt frontend](https://github.com/wikimedia/toolhunt) to Nuxt 3. The backend is available at [Toolhunt backend](https://github.com/blancadesal/toolhunt-backend).
+
+Credit should be given to the original authors, mainly [nbarnabee](https://github.com/nbarnabee) and [HWaruguru](https://github.com/HWaruguru) as the principal contributors to the original Toolhunt project.
+
+## About Toolhunt
+
+Toolhunt is a web application designed to help edit [Toolhub](https://toolhub.wikimedia.org) records. It assists users in finding tools with missing information and adding that information in a straightforward manner.
 
 ## Setup
 
-Make sure to install the dependencies:
+1. Install dependencies:
 
-```bash
-# npm
-npm install
+   ```bash
+   npm install
+   ```
 
-# pnpm
-pnpm install
+2. Start the development server:
 
-# yarn
-yarn install
+   ```bash
+   npm run dev
+   ```
 
-# bun
-bun install
-```
+3. Build for production:
 
-## Development Server
-
-Start the development server on `http://localhost:3000`:
-
-```bash
-# npm
-npm run dev
-
-# pnpm
-pnpm run dev
-
-# yarn
-yarn dev
-
-# bun
-bun run dev
-```
-
-## Production
-
-Build the application for production:
-
-```bash
-# npm
-npm run build
-
-# pnpm
-pnpm run build
-
-# yarn
-yarn build
-
-# bun
-bun run build
-```
-
-Locally preview production build:
-
-```bash
-# npm
-npm run preview
-
-# pnpm
-pnpm run preview
-
-# yarn
-yarn preview
-
-# bun
-bun run preview
-```
-
-Check out the [deployment documentation](https://nuxt.com/docs/getting-started/deployment) for more information.
+   ```bash
+   npm run build
+   ```
