@@ -163,7 +163,7 @@ class ToolhuntApiClient {
   }
 
   async fetchContributions(params?: ContributionsParams): Promise<ContributionsResponse> {
-    let url = '/user/contributions'
+    let url = '/user/contributions/leaderboard'
     if (params) {
       const queryParams = new URLSearchParams()
       if (params.days !== undefined) queryParams.append('days', params.days.toString())
@@ -176,6 +176,15 @@ class ToolhuntApiClient {
 
   async fetchUserContributions(username: string, limit?: number): Promise<UserContributionsResponse> {
     let url = `/user/contributions/${encodeURIComponent(username)}`
+    if (limit !== undefined) {
+      url += `?limit=${limit}`
+    }
+    const response = await this.fetchWithAuth(url)
+    return response.json()
+  }
+
+  async fetchAllContributions(limit?: number): Promise<UserContributionsResponse> {
+    let url = '/user/contributions'
     if (limit !== undefined) {
       url += `?limit=${limit}`
     }

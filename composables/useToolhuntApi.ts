@@ -9,6 +9,7 @@ export function useToolhuntApi() {
   const userContributions = ref<UserContributionsResponse>({ contributions: [], total_contributions: 0 })
   const error = ref<string | null>(null)
   const toolNames = ref<ToolNamesResponse | null>(null)
+  const allContributions = ref<UserContributionsResponse>({ contributions: [], total_contributions: 0 })
 
   const fetchTasks = async (toolNames: string | null = null, fieldNames: string | null = null): Promise<void> => {
     try {
@@ -97,6 +98,18 @@ export function useToolhuntApi() {
     }
   }
 
+  const fetchAllContributions = async (limit?: number): Promise<void> => {
+    error.value = null
+    try {
+      allContributions.value = await toolhuntApi.fetchAllContributions(limit)
+    }
+    catch (err) {
+      console.error('Error fetching all contributions:', err)
+      error.value = err instanceof Error ? err.message : String(err)
+      allContributions.value = { contributions: [], total_contributions: 0 }
+    }
+  }
+
   return {
     tasks,
     fieldNames,
@@ -116,5 +129,7 @@ export function useToolhuntApi() {
     login: toolhuntApi.login.bind(toolhuntApi),
     handleCallback: toolhuntApi.handleCallback.bind(toolhuntApi),
     logout: toolhuntApi.logout.bind(toolhuntApi),
+    allContributions,
+    fetchAllContributions,
   }
 }

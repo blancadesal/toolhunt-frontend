@@ -4,6 +4,7 @@ const router = useRouter()
 
 const menuItems = [
   { to: '/leaderboard', label: 'Leaderboard' },
+  { to: '/stats', label: 'Stats' },
   { to: '/profile', label: 'Profile' },
   { to: '/about', label: 'About' },
 ]
